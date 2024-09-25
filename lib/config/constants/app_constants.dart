@@ -26,3 +26,19 @@ class AppUIConstants {
   static double boxBorderRadius = 8;
   static double dialogBorderRadius = 24;
 }
+
+class AppConstants {
+  static const phoneNumberLength = 10;
+
+  static const dateTimeDefaultFormat = 'dd/MM/yyyy';
+  static const dateTimeRequestFormat = 'yyyy-MM-dd';
+  static const timeRequestFormat = 'hh:mm';
+  static const dateTimeCalendarEventFormat = 'MMMM, yyyy';
+  static const dateTimeNotificationFormat = 'hh:mm | dd/MM/yyyy';
+  static const dateTimeHistoryFormat = 'dd/MM/yyyy | HH:mm';
+  static const time24hFormat = 'HH:mm';
+  static const time12hFormat = 'hh:mm a';
+  static const dateNameFormat = 'EEEE';
+  static const dateTimeNoYearFormat = 'dd/MM';
+  static const onlyShortMonthFormat = 'M';
+}

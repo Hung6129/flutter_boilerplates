@@ -19,8 +19,7 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: ^3.5.3
-
+  sdk: ^3.4.0
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
 # consider running `flutter pub upgrade --major-versions`. Alternatively,
@@ -48,6 +47,11 @@ dependencies:
   auto_size_text: ^3.0.0
   flutter_network_connectivity: ^0.0.6
   flutter_svg: ^2.0.10+1
+  flutter_form_builder: ^9.3.0
+  email_validator: ^3.0.0
+  flutter_rounded_date_picker: ^3.0.4
+  month_year_picker: ^0.4.0+1
+  table_calendar: ^3.1.2
 
 dev_dependencies:
   flutter_test:

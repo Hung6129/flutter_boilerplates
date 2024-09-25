@@ -136,8 +136,8 @@ class ReachabilityServiceImpl extends GetxService
     if (isShowingWarningOfflineDialog) return;
     isShowingWarningOfflineDialog = true;
     // DialogUtil.onDialogConfirm(Get.context,
-    //     title: Strings.noInternetConnection.tr,
-    //     subText: Strings.noInternetConnectionRetryDescription.tr,
+    //     title: Strings.noInternetConnection,
+    //     subText: Strings.noInternetConnectionRetryDescription,
     //     onPositiveFunc: () {
     //   isShowingWarningOfflineDialog = false;
     //   Get.back();
@@ -160,8 +160,8 @@ class ReachabilityServiceImpl extends GetxService
     if (isShowingWarningOfflineDialog) Get.back();
     isShowingWarningOnlineDialog = true;
     // DialogUtil.onDialogConfirm(Get.context,
-    //     title: Strings.hasInternetConnection.tr,
-    //     subText: Strings.hasInternetConnectionDescription.tr,
+    //     title: Strings.hasInternetConnection,
+    //     subText: Strings.hasInternetConnectionDescription,
     //     onPositiveFunc: () {
     //   isShowingWarningOnlineDialog = false;
     //   Get.back();

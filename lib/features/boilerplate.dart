@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_boilerplates/config/constants/app_constants.dart';
 import 'package:flutter_boilerplates/core/utils/card_utils.dart';
 import 'package:flutter_boilerplates/core/utils/dialog_util.dart';
+import 'package:flutter_boilerplates/core/utils/form_utils.dart';
 import 'package:flutter_boilerplates/core/widgets/app_bar_widget.dart';
 import 'package:flutter_boilerplates/core/widgets/app_main_widget.dart';
 import 'package:flutter_boilerplates/core/widgets/buttons/app_filled_button_widget.dart';
@@ -13,6 +14,7 @@ import 'package:flutter_boilerplates/core/widgets/buttons/app_text_button_widget
 import 'package:flutter_boilerplates/core/widgets/card/app_card_item.dart';
 import 'package:flutter_boilerplates/core/widgets/card/app_card_layout.dart';
 import 'package:flutter_boilerplates/core/widgets/texts/app_text_widget.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:get/get.dart';
 
 class Boilerplate extends StatefulWidget {
@@ -21,6 +23,8 @@ class Boilerplate extends StatefulWidget {
   @override
   State<Boilerplate> createState() => _BoilerplateState();
 }
+
+final GlobalKey<FormBuilderState> _formKey = GlobalKey<FormBuilderState>();
 
 class _BoilerplateState extends State<Boilerplate> {
   @override
@@ -31,7 +35,6 @@ class _BoilerplateState extends State<Boilerplate> {
         text: 'Boilerplate',
       ),
       body: ListView(
-        padding: const EdgeInsets.all(16),
         children: [
           /// Buttons
           _buildButtons(context),
@@ -42,10 +45,20 @@ class _BoilerplateState extends State<Boilerplate> {
 
           /// Cards
           _buildCards(context),
+          SizedBox(height: AppUIConstants.defaultPadding),
+          SizedBox(height: AppUIConstants.defaultPadding),
+          SizedBox(height: AppUIConstants.defaultPadding),
+          SizedBox(height: AppUIConstants.defaultPadding),
 
           /// Dialogs
           _buildDialogs(context),
+          SizedBox(height: AppUIConstants.defaultPadding),
+          SizedBox(height: AppUIConstants.defaultPadding),
+          SizedBox(height: AppUIConstants.defaultPadding),
+          SizedBox(height: AppUIConstants.defaultPadding),
 
+          /// TextFields
+          _buildTextFields(context),
           SizedBox(height: AppUIConstants.defaultPadding),
           SizedBox(height: AppUIConstants.defaultPadding),
           SizedBox(height: AppUIConstants.defaultPadding),
@@ -55,51 +68,114 @@ class _BoilerplateState extends State<Boilerplate> {
     );
   }
 
-  Column _buildDialogs(BuildContext context) {
-    return Column(
-      children: [
-        AppTextWidget(
-          'Dialog',
-          textStyle: context.theme.textTheme.headlineMedium,
-        ),
-        SizedBox(height: AppUIConstants.defaultPadding),
-        AppOutlinedButtonWidget(
-          'Cảnh báo',
-          onPressed: () {
-            DialogUtil.onDialogWarning(
-              context,
-              title: 'Warning',
-              subText: 'This is a warning dialog',
-            );
-          },
-        ),
-        SizedBox(height: AppUIConstants.majorScaleMargin(2)),
-        AppOutlinedButtonWidget(
-          'Lỗi',
-          onPressed: () {
-            DialogUtil.onDialogError(
-              context,
-              title: 'Error',
-              subText: 'This is an error dialog',
-            );
-          },
-        ),
-        SizedBox(height: AppUIConstants.majorScaleMargin(2)),
-        AppOutlinedButtonWidget(
-          'Thành công',
-          onPressed: () {
-            DialogUtil.onDialogSuccess(
-              context,
-              title: 'Success',
-              subText: 'This is a success dialog',
-            );
-          },
-        ),
-      ],
+  Widget _buildTextFields(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: AppUIConstants.defaultPadding),
+      child: Column(
+        children: [
+          AppTextWidget(
+            'Text Field',
+            textStyle: context.theme.textTheme.headlineMedium,
+          ),
+          SizedBox(height: AppUIConstants.defaultPadding),
+          FormBuilder(
+            key: _formKey,
+            child: Column(
+              children: [
+                FormUtils.renderOutlineInputField(
+                  context,
+                  key: 'renderOutlineInputField',
+                  label: 'App Text Field Outline Widget',
+                  hintText: 'Hint Text',
+                  require: true,
+                  suffixIcon: const Icon(Icons.place),
+                  onChanged: (value) {},
+                ),
+                SizedBox(height: AppUIConstants.majorScaleMargin(4)),
+                FormUtils.renderInputField(
+                  context,
+                  key: 'renderInputField',
+                  label: 'App Text Field Widget',
+                  hintText: 'Hint Text',
+                  suffixIcon: const Icon(Icons.search),
+                  onChanged: (value) {},
+                ),
+                SizedBox(height: AppUIConstants.majorScaleMargin(4)),
+                FormUtils.renderPasswordField(
+                  context,
+                  key: 'renderPasswordField',
+                  label: 'App Text Field Password Widget',
+                  hintText: 'Hint Text',
+                ),
+                SizedBox(height: AppUIConstants.majorScaleMargin(4)),
+                FormUtils.renderDatePickerField(
+                  context,
+                  key: 'renderDatePickerField',
+                  label: 'App Date Picker Field Widget',
+                  onChanged: (value) {},
+                ),
+                SizedBox(height: AppUIConstants.majorScaleMargin(4)),
+                FormUtils.buildRowInputMoney(
+                  context,
+                  'Đơn vị tiền nợ',
+                  'buildRowInputMoney',
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 
-  Column _buildCards(BuildContext context) {
+  Widget _buildDialogs(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: AppUIConstants.defaultPadding),
+      child: Column(
+        children: [
+          AppTextWidget(
+            'Dialog',
+            textStyle: context.theme.textTheme.headlineMedium,
+          ),
+          SizedBox(height: AppUIConstants.defaultPadding),
+          AppOutlinedButtonWidget(
+            'Cảnh báo',
+            onPressed: () {
+              DialogUtil.onDialogWarning(
+                context,
+                title: 'Warning',
+                subText: 'This is a warning dialog',
+              );
+            },
+          ),
+          SizedBox(height: AppUIConstants.majorScaleMargin(4)),
+          AppOutlinedButtonWidget(
+            'Lỗi',
+            onPressed: () {
+              DialogUtil.onDialogError(
+                context,
+                title: 'Error',
+                subText: 'This is an error dialog',
+              );
+            },
+          ),
+          SizedBox(height: AppUIConstants.majorScaleMargin(4)),
+          AppOutlinedButtonWidget(
+            'Thành công',
+            onPressed: () {
+              DialogUtil.onDialogSuccess(
+                context,
+                title: 'Success',
+                subText: 'This is a success dialog',
+              );
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCards(BuildContext context) {
     return Column(
       children: [
         AppTextWidget(
@@ -138,45 +214,48 @@ class _BoilerplateState extends State<Boilerplate> {
     );
   }
 
-  Column _buildButtons(BuildContext context) {
-    return Column(
-      children: [
-        AppTextWidget(
-          'Button',
-          textStyle: context.theme.textTheme.headlineMedium,
-        ),
-        SizedBox(height: AppUIConstants.defaultPadding),
-        Row(
-          children: [
-            AppOutlinedIconButtonWidget(
-              icon: Icons.add_ic_call,
-              onPressed: () {},
-            ),
-            AppIconButtonWidget(
-              icon: Icons.add,
-              onPressed: () {},
-            ),
-          ],
-        ),
-        SizedBox(height: AppUIConstants.majorScaleMargin(2)),
-        AppFilledButtonWidget(
-          'Filled Button',
-          onPressed: () {},
-        ),
-        SizedBox(height: AppUIConstants.majorScaleMargin(2)),
-        AppOutlinedButtonWidget(
-          'Outlined Button',
-          onPressed: () {},
-        ),
-        SizedBox(height: AppUIConstants.majorScaleMargin(2)),
-        AppTextButtonWidget('Text Button', onPressed: () {}),
-        SizedBox(height: AppUIConstants.majorScaleMargin(2)),
-        AppOutlinedWithIconButtonWidget(
-          'Outlined with Icon Button',
-          prefixIcon: const Icon(Icons.add),
-          onPressed: () {},
-        ),
-      ],
+  Widget _buildButtons(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: AppUIConstants.defaultPadding),
+      child: Column(
+        children: [
+          AppTextWidget(
+            'Button',
+            textStyle: context.theme.textTheme.headlineMedium,
+          ),
+          SizedBox(height: AppUIConstants.defaultPadding),
+          Row(
+            children: [
+              AppOutlinedIconButtonWidget(
+                icon: Icons.add_ic_call,
+                onPressed: () {},
+              ),
+              AppIconButtonWidget(
+                icon: Icons.add,
+                onPressed: () {},
+              ),
+            ],
+          ),
+          SizedBox(height: AppUIConstants.majorScaleMargin(4)),
+          AppFilledButtonWidget(
+            'Filled Button',
+            onPressed: () {},
+          ),
+          SizedBox(height: AppUIConstants.majorScaleMargin(4)),
+          AppOutlinedButtonWidget(
+            'Outlined Button',
+            onPressed: () {},
+          ),
+          SizedBox(height: AppUIConstants.majorScaleMargin(4)),
+          AppTextButtonWidget('Text Button', onPressed: () {}),
+          SizedBox(height: AppUIConstants.majorScaleMargin(4)),
+          AppOutlinedWithIconButtonWidget(
+            'Outlined with Icon Button',
+            prefixIcon: const Icon(Icons.add),
+            onPressed: () {},
+          ),
+        ],
+      ),
     );
   }
 }
