@@ -42,3 +42,7 @@ class AppConstants {
   static const dateTimeNoYearFormat = 'dd/MM';
   static const onlyShortMonthFormat = 'M';
 }
+
+class AppImageAsset {
+  static String imagePlaceHolder = 'assets/images/placeholder.png';
+}

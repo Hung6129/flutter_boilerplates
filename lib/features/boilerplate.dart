@@ -5,6 +5,7 @@ import 'package:flutter_boilerplates/core/utils/dialog_util.dart';
 import 'package:flutter_boilerplates/core/utils/form_utils.dart';
 import 'package:flutter_boilerplates/core/widgets/app_bar_widget.dart';
 import 'package:flutter_boilerplates/core/widgets/app_main_widget.dart';
+import 'package:flutter_boilerplates/core/widgets/bottomsheet/app_bottom_sheet_widget.dart';
 import 'package:flutter_boilerplates/core/widgets/buttons/app_filled_button_widget.dart';
 import 'package:flutter_boilerplates/core/widgets/buttons/app_icon_button_widget.dart';
 import 'package:flutter_boilerplates/core/widgets/buttons/app_outlined_button_widget.dart';
@@ -63,6 +64,35 @@ class _BoilerplateState extends State<Boilerplate> {
           SizedBox(height: AppUIConstants.defaultPadding),
           SizedBox(height: AppUIConstants.defaultPadding),
           SizedBox(height: AppUIConstants.defaultPadding),
+
+          /// Bottom sheet
+          _buildBottomSheet(context),
+          SizedBox(height: AppUIConstants.defaultPadding),
+          SizedBox(height: AppUIConstants.defaultPadding),
+          SizedBox(height: AppUIConstants.defaultPadding),
+          SizedBox(height: AppUIConstants.defaultPadding),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildBottomSheet(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: AppUIConstants.defaultPadding),
+      child: Column(
+        children: [
+          AppTextWidget(
+            'Bottom Sheet',
+            textStyle: context.theme.textTheme.headlineMedium,
+          ),
+          SizedBox(height: AppUIConstants.defaultPadding),
+          AppOutlinedButtonWidget(
+            'Chọn ảnh',
+            onPressed: () {
+              AppBottomSheetWidget.showBottomSheetPickImageWidget(context,
+                  onPickerCamera: () {}, onPickerImage: () {});
+            },
+          ),
         ],
       ),
     );

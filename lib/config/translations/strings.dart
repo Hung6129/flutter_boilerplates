@@ -20,6 +20,11 @@ class Strings {
   static const String delete = 'Xóa';
   static const String edit = 'Sửa';
   static const String exit = 'Thoát';
+  static const String selector = 'Chọn';
+  static const String selectorGalleryImage = 'Chọn ảnh từ thư viện';
+  static const String selectorCamera = 'Chụp ảnh';
+  static const String selectorGallery = 'Chọn từ thư viện';
+  static const String selectorVideo = 'Chọn video';
 
   static const String getDataFailure = 'Lấy thông tin thất bại';
   static const String downloadFileFailure = 'Tải tệp thất bại';

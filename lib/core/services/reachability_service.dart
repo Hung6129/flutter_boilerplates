@@ -1,187 +1,181 @@
-// import 'package:get/get.dart';
-// import 'package:flutter_network_connectivity/flutter_network_connectivity.dart';
+import 'dart:async';
+import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:flutter/material.dart' show debugPrint;
+import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 
-// /// UserPermission Interface
-// abstract class ReachabilityService {
-//   static bool offlineModeEnabled = false;
+/// UserPermission Interface
+abstract class ReachabilityService {
+  Future<dynamic> initConnectionReachability();
 
-//   /// Network reachability
-//   Future<dynamic> initConnectionReachability();
+  RxBool isOnlineNetwork();
 
-//   RxBool isOnlineNetwork();
+  bool isConnectingNetwork();
 
-//   bool isConnectingNetwork();
+  /// App offline mode handling
+  bool isAppOnlineMode();
 
-//   /// App offline mode handling
-//   bool isAppOnlineMode();
+  void showWarningForOfflineMode({bool forceShow});
 
-//   void showWarningForOfflineMode({bool forceShow});
+  void showWarningForRetryConnection({bool forceShow});
+}
 
-//   void showWarningForRetryConnection({bool forceShow});
-// }
+enum ReachabilityStatus {
+  online,
+  offline,
+  retryConnecting,
+}
 
-// enum ReachabilityStatus {
-//   online,
-//   offline,
-//   retryConnecting,
-// }
+enum AppConnectionMode {
+  online,
+  offline,
+}
 
-// enum AppConnectionMode {
-//   online,
-//   offline,
-// }
+AppConnectionMode appConnectionMode_ = AppConnectionMode.online;
 
-// AppConnectionMode appConnectionMode_ = AppConnectionMode.online;
+class ReachabilityServiceImpl extends GetxService
+    implements ReachabilityService {
+  int MAX_RETRY_TIMES = 1;
+  int retryConnectingTimes = 0;
+  bool wasSkippedForOnlineAgain = false;
+  bool wasKeptInOfflineMode = false;
+  bool isShowingWarningOfflineDialog = false;
+  bool isShowingWarningOnlineDialog = false;
 
-// class ReachabilityServiceImpl extends GetxService
-//     implements ReachabilityService {
-//   // ignore: non_constant_identifier_names
-//   int MAX_RETRY_TIMES = 1;
-//   int retryConnectingTimes = 0;
-//   bool wasSkippedForOnlineAgain = false;
-//   bool wasKeptInOfflineMode = false;
-//   bool isShowingWarningOfflineDialog = false;
-//   bool isShowingWarningOnlineDialog = false;
+  Rx<ReachabilityStatus> reachabilityStatus =
+      Rx(ReachabilityStatus.retryConnecting);
 
-//   Rx<ReachabilityStatus> reachabilityStatus =
-//       Rx(ReachabilityStatus.retryConnecting);
-//   late FlutterNetworkConnectivity networkConnectivity;
+  final _connectionStatus = [ConnectivityResult.none].obs;
+  final Connectivity _connectivity = Connectivity();
+  late StreamSubscription<List<ConnectivityResult>> _connectivitySubscription;
 
-//   @override
-//   void onInit() {
-//     reachabilityStatus.value = ReachabilityStatus.retryConnecting;
-//     networkConnectivity = FlutterNetworkConnectivity(
-//       isContinousLookUp: true,
-//       lookUpDuration: const Duration(seconds: 6),
-//     );
-//     networkConnectivity
-//         .getInternetAvailabilityStream()
-//         .listen((isInternetAvailable) {
-//       if (ReachabilityService.offlineModeEnabled) {
-//         if (isInternetAvailable) {
-//           reachabilityStatus.value = ReachabilityStatus.online;
-//           // reset offline configs
-//           retryConnectingTimes = 0;
-//           wasKeptInOfflineMode = false;
-//           if (!isAppOnlineMode()) {
-//             showWarningForRetryConnection();
-//           }
-//         } else {
-//           if (retryConnectingTimes < MAX_RETRY_TIMES) {
-//             reachabilityStatus.value = ReachabilityStatus.retryConnecting;
-//             retryConnectingTimes += 1;
-//           } else {
-//             reachabilityStatus.value = ReachabilityStatus.offline;
-//             if (isAppOnlineMode()) {
-//               showWarningForOfflineMode();
-//             }
-//           }
-//         }
-//       }
-//     });
-//     super.onInit();
-//   }
+  set connectionStatus(value) {
+    _connectionStatus.value = value;
+  }
 
-//   @override
-//   void onClose() {
-//     networkConnectivity.unregisterAvailabilityListener();
-//     super.onClose();
-//   }
+  @override
+  void onInit() async {
+    getConnectivityType();
+    _connectivitySubscription =
+        _connectivity.onConnectivityChanged.listen(_updateState);
+    super.onInit();
+  }
 
-//   @override
-//   bool isConnectingNetwork() {
-//     if (!ReachabilityService.offlineModeEnabled) return false;
-//     return reachabilityStatus.value == ReachabilityStatus.retryConnecting;
-//   }
+  Future<void> getConnectivityType() async {
+    late List<ConnectivityResult> connectivityResult;
+    try {
+      connectivityResult = await (_connectivity.checkConnectivity());
+    } on PlatformException catch (e) {
+      debugPrint('PlatformException: ${e.toString()}');
+    }
+    return _updateState(connectivityResult);
+  }
 
-//   @override
-//   bool isAppOnlineMode() {
-//     if (!ReachabilityService.offlineModeEnabled) return true;
-//     return appConnectionMode_ == AppConnectionMode.online;
-//   }
+  _updateState(List<ConnectivityResult> result) {
+    switch (result.first) {
+      case ConnectivityResult.wifi:
+        connectionStatus = [ConnectivityResult.wifi];
+        reachabilityStatus.value = ReachabilityStatus.online;
+        break;
+      case ConnectivityResult.mobile:
+        connectionStatus = [ConnectivityResult.mobile];
+        reachabilityStatus.value = ReachabilityStatus.online;
+        break;
+      case ConnectivityResult.none:
+        connectionStatus = [ConnectivityResult.none];
+        reachabilityStatus.value = ReachabilityStatus.offline;
+        break;
+      default:
+        debugPrint('ConnectivityResult: ${result.first}');
+        break;
+    }
+  }
 
-//   @override
-//   RxBool isOnlineNetwork() {
-//     if (!ReachabilityService.offlineModeEnabled) return true.obs;
-//     return (reachabilityStatus.value == ReachabilityStatus.online).obs;
-//   }
+  @override
+  void onClose() {
+    _connectivitySubscription.cancel();
+  }
 
-//   @override
-//   Future<void> initConnectionReachability() async {
-//     // get init connection status
-//     if (ReachabilityService.offlineModeEnabled) {
-//       reachabilityStatus.value =
-//           (await networkConnectivity.isInternetConnectionAvailable())
-//               ? ReachabilityStatus.online
-//               : ReachabilityStatus.offline;
-//       appConnectionMode_ = isOnlineNetwork().value
-//           ? AppConnectionMode.online
-//           : AppConnectionMode.online;
-//       // keep observe connection status
-//       try {
-//         networkConnectivity.registerAvailabilityListener();
-//       } catch (_) {}
-//     }
+  @override
+  bool isConnectingNetwork() {
+    return reachabilityStatus.value == ReachabilityStatus.retryConnecting;
+  }
 
-//     return Future.value();
-//   }
+  @override
+  bool isAppOnlineMode() {
+    return appConnectionMode_ == AppConnectionMode.online;
+  }
 
-//   @override
-//   void showWarningForOfflineMode({bool forceShow = false}) {
-//     if (!ReachabilityService.offlineModeEnabled) return;
-//     if (!forceShow) {
-//       if (wasKeptInOfflineMode) return;
-//     }
+  @override
+  RxBool isOnlineNetwork() {
+    return (reachabilityStatus.value == ReachabilityStatus.online).obs;
+  }
 
-//     if (isShowingWarningOfflineDialog) return;
-//     isShowingWarningOfflineDialog = true;
-//     // DialogUtil.onDialogConfirm(Get.context,
-//     //     title: Strings.noInternetConnection,
-//     //     subText: Strings.noInternetConnectionRetryDescription,
-//     //     onPositiveFunc: () {
-//     //   isShowingWarningOfflineDialog = false;
-//     //   Get.back();
-//     //   // check: logged in before => offline mode ; otherwise go back to login
-//     // }, onNegativeFunc: () {
-//     //   isShowingWarningOfflineDialog = false;
-//     //   wasKeptInOfflineMode = true;
-//     //   Get.back();
-//     // });
-//   }
+  @override
+  Future<void> initConnectionReachability() async {
+    if (isConnectingNetwork()) return;
+    if (isAppOnlineMode()) return;
+    if (reachabilityStatus.value == ReachabilityStatus.online) {
+      didGoBackOnlineMode();
+    } else {
+      didGoToOfflineMode();
+    }
+  }
 
-//   @override
-//   void showWarningForRetryConnection({bool forceShow = false}) {
-//     if (!ReachabilityService.offlineModeEnabled) return;
-//     if (!forceShow) {
-//       if (wasSkippedForOnlineAgain) return;
-//     }
+  @override
+  void showWarningForOfflineMode({bool forceShow = false}) {
+    // if (!ReachabilityService.offlineModeEnabled) return;
+    // if (!forceShow) {
+    //   if (wasKeptInOfflineMode) return;
+    // }
 
-//     if (isShowingWarningOnlineDialog) return;
-//     if (isShowingWarningOfflineDialog) Get.back();
-//     isShowingWarningOnlineDialog = true;
-//     // DialogUtil.onDialogConfirm(Get.context,
-//     //     title: Strings.hasInternetConnection,
-//     //     subText: Strings.hasInternetConnectionDescription,
-//     //     onPositiveFunc: () {
-//     //   isShowingWarningOnlineDialog = false;
-//     //   Get.back();
-//     //   didGoBackOnlineMode();
-//     // }, onNegativeFunc: () {
-//     //   isShowingWarningOnlineDialog = false;
-//     //   wasSkippedForOnlineAgain = true;
-//     //   Get.back();
-//     // });
-//   }
+    // if (isShowingWarningOfflineDialog) return;
+    // isShowingWarningOfflineDialog = true;
+    // // DialogUtil.onDialogConfirm(Get.context,
+    // //     title: Strings.noInternetConnection,
+    // //     subText: Strings.noInternetConnectionRetryDescription,
+    // //     onPositiveFunc: () {
+    // //   isShowingWarningOfflineDialog = false;
+    // //   Get.back();
+    // //   // check: logged in before => offline mode ; otherwise go back to login
+    // // }, onNegativeFunc: () {
+    // //   isShowingWarningOfflineDialog = false;
+    // //   wasKeptInOfflineMode = true;
+    // //   Get.back();
+    // // });
+  }
 
-//   void didGoToOfflineMode() {
-//     if (!ReachabilityService.offlineModeEnabled) return;
-//     appConnectionMode_ = AppConnectionMode.offline;
-//     // Get.offAllNamed(Routes.homeOffline);
-//   }
+  @override
+  void showWarningForRetryConnection({bool forceShow = false}) {
+    // if (!ReachabilityService.offlineModeEnabled) return;
+    // if (!forceShow) {
+    //   if (wasSkippedForOnlineAgain) return;
+    // }
 
-//   void didGoBackOnlineMode() {
-//     if (!ReachabilityService.offlineModeEnabled) return;
-//     appConnectionMode_ = AppConnectionMode.online;
-//     // Get.offAllNamed(Routes.walkthrough);
-//   }
-// }
+    // if (isShowingWarningOnlineDialog) return;
+    // if (isShowingWarningOfflineDialog) Get.back();
+    // isShowingWarningOnlineDialog = true;
+    // // DialogUtil.onDialogConfirm(Get.context,
+    // //     title: Strings.hasInternetConnection,
+    // //     subText: Strings.hasInternetConnectionDescription,
+    // //     onPositiveFunc: () {
+    // //   isShowingWarningOnlineDialog = false;
+    // //   Get.back();
+    // //   didGoBackOnlineMode();
+    // // }, onNegativeFunc: () {
+    // //   isShowingWarningOnlineDialog = false;
+    // //   wasSkippedForOnlineAgain = true;
+    // //   Get.back();
+    // // });
+  }
+
+  void didGoToOfflineMode() {
+    appConnectionMode_ = AppConnectionMode.offline;
+    // Get.offAllNamed(Routes.homeOffline);
+  }
+
+  void didGoBackOnlineMode() {
+    appConnectionMode_ = AppConnectionMode.online;
+    // Get.offAllNamed(Routes.walkthrough);
+  }
+}
