@@ -79,52 +79,54 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
             ),
           ),
         ),
-        bottom: PreferredSize(
-          preferredSize: Size.fromHeight(bottomHeight +
-              16 +
-              (Get.find<ReachabilityService>().isOnlineNetwork().value == true
-                  ? 0
-                  : 42)),
-          child: Column(
-            children: [
-              bottomWidget,
-              Get.find<ReachabilityService>().isOnlineNetwork().value == true
-                  ? (Get.find<ReachabilityService>().isAppOnlineMode()
-                      ? const SizedBox()
-                      : Padding(
-                          padding: EdgeInsets.all(
-                              AppUIConstants.majorScalePadding(4)),
-                          child: const AppInternetConnectionWidget(),
-                        ))
-                  : Padding(
-                      padding:
-                          EdgeInsets.all(AppUIConstants.majorScalePadding(4)),
-                      child: const AppNoInternetWidget(),
-                    ),
-              if (bottomHeight > 0 &&
-                      Get.find<ReachabilityService>().isOnlineNetwork().value ==
-                          true ||
-                  (Get.find<ReachabilityService>().isOnlineNetwork().value !=
-                          true &&
-                      Get.find<ReachabilityService>().isAppOnlineMode()))
-                const SizedBox(height: 16)
-            ],
-          ),
-        ),
+        // bottom: PreferredSize(
+        //   preferredSize: Size.fromHeight(bottomHeight +
+        //       16 +
+        //       (Get.find<ReachabilityService>().isOnlineNetwork().value == true
+        //           ? 0
+        //           : 42)),
+        //   child: Column(
+        //     children: [
+        //       bottomWidget,
+        //       Get.find<ReachabilityService>().isOnlineNetwork().value == true
+        //           ? (Get.find<ReachabilityService>().isAppOnlineMode()
+        //               ? const SizedBox()
+        //               : Padding(
+        //                   padding: EdgeInsets.all(
+        //                       AppUIConstants.majorScalePadding(4)),
+        //                   child: const AppInternetConnectionWidget(),
+        //                 ))
+        //           : Padding(
+        //               padding:
+        //                   EdgeInsets.all(AppUIConstants.majorScalePadding(4)),
+        //               child: const AppNoInternetWidget(),
+        //             ),
+        //       if (bottomHeight > 0 &&
+        //               Get.find<ReachabilityService>().isOnlineNetwork().value ==
+        //                   true ||
+        //           (Get.find<ReachabilityService>().isOnlineNetwork().value !=
+        //                   true &&
+        //               Get.find<ReachabilityService>().isAppOnlineMode()))
+        //         const SizedBox(height: 16)
+        //     ],
+        //   ),
+        // ),
       ),
     );
   }
 
   @override
-  Size get preferredSize => bottomHeight > 0
-      ? Size.fromHeight(kToolbarHeight +
-          bottomHeight +
-          16 +
-          (Get.find<ReachabilityService>().isOnlineNetwork().value == true
-              ? 0
-              : 42))
-      : Size.fromHeight(kToolbarHeight +
-          (Get.find<ReachabilityService>().isOnlineNetwork().value == true
-              ? 0
-              : 42));
+  Size get preferredSize => throw UnimplementedError();
+  // @override
+  // Size get preferredSize => bottomHeight > 0
+  //     ? Size.fromHeight(kToolbarHeight +
+  //         bottomHeight +
+  //         16 +
+  //         (Get.find<ReachabilityService>().isOnlineNetwork().value == true
+  //             ? 0
+  //             : 42))
+  //     : Size.fromHeight(kToolbarHeight +
+  //         (Get.find<ReachabilityService>().isOnlineNetwork().value == true
+  //             ? 0
+  //             : 42));
 }
