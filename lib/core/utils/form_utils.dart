@@ -5,6 +5,7 @@ import 'package:flutter_boilerplates/config/constants/form_key.dart';
 import 'package:flutter_boilerplates/config/themes/app_theme.dart';
 import 'package:flutter_boilerplates/config/translations/strings.dart';
 import 'package:flutter_boilerplates/core/widgets/date/app_date_picker_widget.dart';
+import 'package:flutter_boilerplates/core/widgets/date/app_date_range_picker_widget.dart';
 import 'package:flutter_boilerplates/core/widgets/dropdown/app_dropdown_field_widget.dart';
 import 'package:flutter_boilerplates/core/widgets/dropdown/app_dropdown_widget.dart';
 import 'package:flutter_boilerplates/core/widgets/texts/app_text_field_outline_widget.dart';
@@ -55,6 +56,36 @@ class FormUtils {
   //     },
   //   );
   // }
+
+  /// Using for picking date range
+  static Widget buildDateRange({
+    required String name,
+    required String fromName,
+    required String toName,
+    Function(DateTime?, DateTime?)? onChanged,
+    DateTime? initFirstDate,
+    DateTime? initLastDate,
+  }) {
+    return Column(
+      children: [
+        FormUtils.renderEmptyField(name: fromName),
+        FormUtils.renderEmptyField(name: toName),
+        FormBuilderField(
+          name: name,
+          builder: (field) {
+            return AppDateRangePickerWidget(
+              Strings.time,
+              hintText: Strings.timePickerHint,
+              initFirstDate: initFirstDate ?? DateTime.now(),
+              initLastDate:
+                  initLastDate ?? DateTime.now().add(const Duration(days: 7)),
+              onChanged: onChanged,
+            );
+          },
+        ),
+      ],
+    );
+  }
 
   ///
   /// Render a basic input field using formKey and formBuilderField

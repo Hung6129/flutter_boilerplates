@@ -1,8 +1,11 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_boilerplates/config/themes/app_theme.dart';
 import 'package:flutter_boilerplates/core/services/reachability_service.dart';
-import 'package:flutter_boilerplates/features/boilerplate.dart';
+import 'package:flutter_boilerplates/features/main_page.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get/get.dart';
+import 'package:month_year_picker/month_year_picker.dart';
 
 void main() {
   runApp(
@@ -18,12 +21,21 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     Get.put<ReachabilityService>(ReachabilityServiceImpl());
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Flutter Boilerplate Demo',
-      theme: AppThemeData.lightThemeData,
-      darkTheme: AppThemeData.darkThemeData,
-      home: const Boilerplate(),
-    );
+        debugShowCheckedModeBanner: false,
+        title: 'Flutter Boilerplate Demo',
+        theme: AppThemeData.lightThemeData,
+        darkTheme: AppThemeData.darkThemeData,
+        localizationsDelegates: const [
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          DefaultCupertinoLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+          MonthYearPickerLocalizations.delegate,
+        ],
+        supportedLocales: const [
+          Locale('vi', 'vi_VN'),
+        ],
+        home: const MainPage());
   }
 }
 
@@ -597,4 +609,3 @@ class MyApp extends StatelessWidget {
 //     );
 //   }
 // }
-

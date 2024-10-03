@@ -150,6 +150,12 @@ class _BoilerplateState extends State<Boilerplate> {
                   'Đơn vị tiền nợ',
                   'buildRowInputMoney',
                 ),
+                SizedBox(height: AppUIConstants.majorScaleMargin(4)),
+                FormUtils.buildDateRange(
+                  name: 'dateRange',
+                  fromName: 'fromDate',
+                  toName: 'toDate',
+                ),
               ],
             ),
           ),

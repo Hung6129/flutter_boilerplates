@@ -164,58 +164,61 @@ class AppDatePickerDialog {
   }) async {
     if (context == null) return;
     DateTime? firstDate, lastDate;
-    Get.dialog(
-      Dialog(
-        insetPadding: const EdgeInsets.all(20),
-        child: Container(
-          decoration: BoxDecoration(
-            color: context.theme.dialogBackgroundColor,
-            borderRadius: BorderRadius.circular(24),
-          ),
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              AppCalendarEventWidget(
-                initRangeStartDay: initialFirstDate,
-                initRangeEndDay: initialLastDate,
-                firstDay: firstLimitDate,
-                lastDay: lastLimitDate,
-                daysWithMarker: List.empty(),
-                onRangeSelected:
-                    (DateTime? start, DateTime? end, DateTime focusedDay) {
-                  firstDate = start;
-                  lastDate = end;
-                },
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(
-                    vertical: AppUIConstants.defaultPadding),
-                child: const Divider(),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  AppTextButtonWidget(
-                    Strings.exit,
-                    onPressed: () => Get.back(),
-                  ),
-                  AppTextButtonWidget(
-                    Strings.confirm,
-                    onPressed: () => {
-                      Get.back(),
-                      onDateTimeChanged.call(firstDate, lastDate),
-                    },
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-      ),
+    return showDialog(
+      context: context,
       barrierDismissible: false,
+      builder: (context) {
+        return Dialog(
+          insetPadding: const EdgeInsets.all(20),
+          child: Container(
+            decoration: BoxDecoration(
+              color: context.theme.dialogBackgroundColor,
+              borderRadius: BorderRadius.circular(24),
+            ),
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                AppCalendarEventWidget(
+                  initRangeStartDay: initialFirstDate,
+                  initRangeEndDay: initialLastDate,
+                  firstDay: firstLimitDate,
+                  lastDay: lastLimitDate,
+                  daysWithMarker: List.empty(),
+                  onRangeSelected:
+                      (DateTime? start, DateTime? end, DateTime focusedDay) {
+                    firstDate = start;
+                    lastDate = end;
+                  },
+                ),
+                Padding(
+                  padding: EdgeInsets.symmetric(
+                      vertical: AppUIConstants.defaultPadding),
+                  child: const Divider(),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    AppTextButtonWidget(
+                      Strings.exit,
+                      onPressed: () => Navigator.of(context).pop(),
+                    ),
+                    AppTextButtonWidget(
+                      Strings.confirm,
+                      onPressed: () => {
+                        Navigator.of(context).pop(),
+                        onDateTimeChanged.call(firstDate, lastDate),
+                      },
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }

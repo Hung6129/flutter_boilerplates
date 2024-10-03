@@ -2,6 +2,9 @@ class Strings {
   static const String dateDefaultFormat = 'dd/mm/yyyy';
   static const String dateDefaultDisplayWhenNull = '--';
   static const String chooseDate = 'Chọn ngày';
+  static const String chooseTime = 'Chọn giờ';
+  static const String time = 'Thời gian';
+  static const String timePickerHint = 'Chọn thời gian';
 
   static const String requiredMessage = 'Trường này là bắt buộc!';
   static const String requiredNumberLargerZeroMessage = 'Nhập số lớn hơn 0!';
