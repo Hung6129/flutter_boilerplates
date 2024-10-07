@@ -45,4 +45,6 @@ class AppConstants {
 
 class AppImageAsset {
   static String imagePlaceHolder = 'assets/images/placeholder.png';
+
+  static String imageCat = 'assets/images/profile-cat.png';
 }

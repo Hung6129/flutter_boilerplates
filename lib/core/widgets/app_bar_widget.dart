@@ -68,9 +68,9 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
               context.theme.primaryColorLight,
               context.theme.primaryColor,
             ], begin: Alignment.topCenter, end: Alignment.bottomCenter),
-            borderRadius: BorderRadius.only(
-              bottomRight: Radius.circular(bottomRightRadius.toDouble()),
-            ),
+            // borderRadius: BorderRadius.only(
+            //   bottomRight: Radius.circular(bottomRightRadius.toDouble()),
+            // ),
           ),
         ),
       ),
