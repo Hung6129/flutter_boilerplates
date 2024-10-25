@@ -31,8 +31,6 @@ dependencies:
   url_launcher: ^6.2.6
   geocoding: ^3.0.0
   gal: ^2.3.0
-  core_module:
-    path: ../core_module
 
 dev_dependencies:
   flutter_test:
